@@ -1,0 +1,14 @@
+# DVC
+/data/cats_and_dogs/
+
+# Python
+__pycache__/
+*.pyc
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Experiments
+mlruns/
+mlflow.db
+artifacts/
