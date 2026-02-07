@@ -1,33 +1,33 @@
-name: CI Pipeline – Build, Test & Publish
+name: CI Pipeline
 
 on:
   push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+    branches:
+      - main
 
 jobs:
-  build-test-publish:
+  build-test:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout source code
+      - name: Checkout code
         uses: actions/checkout@v4
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v4
         with:
-          python-version: "3.10"
+          python-version: '3.10'
 
       - name: Install dependencies
         run: |
-          pip install --upgrade pip
+          python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install pytest
 
       - name: Run unit tests
+        env:
+          PYTHONPATH: .
         run: pytest
 
       - name: Build Docker image
-  run: docker build -t cats-dogs-api .
-
+        run: docker build -t cats-dogs-api .
