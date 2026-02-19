@@ -35,16 +35,19 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Build and Push Docker Image
-        run: |
-          docker build -t ${{ secrets.DOCKER_USERNAME }}/cats-dogs-api:latest .
-          docker push ${{ secrets.DOCKER_USERNAME }}/cats-dogs-api:latest
+      - name: Build Docker Image
+        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/cats-dogs-api:latest .
 
-      - name: Deploy Updated Container
-        run: |
-          docker compose pull
-          docker compose up -d
-          sleep 15
+      - name: Push Docker Image
+        run: docker push ${{ secrets.DOCKER_USERNAME }}/cats-dogs-api:latest
 
+      # Deploy by running container directly
+      - name: Run Container from Registry
+        run: |
+          docker run -d -p 8000:8000 --name test-container \
+            ${{ secrets.DOCKER_USERNAME }}/cats-dogs-api:latest
+          sleep 20
+
+      # Smoke Test
       - name: Smoke Test - Health Endpoint
         run: curl --fail http://localhost:8000/health
