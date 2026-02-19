@@ -1,5 +1,0 @@
-outs:
-- md5: e7b16a536232f6edf6dccd2dc63d2c6c
-  size: 286933680
-  hash: md5
-  path: baseline_cnn_cats_dogs.h5
