@@ -1,108 +1,207 @@
-CATS vs DOGS – END-TO-END MLOPS PIPELINE
+PROJECT OVERVIEW
 
-Project Overview
 This project implements a complete end-to-end MLOps pipeline for a binary image classification model (Cats vs Dogs).
-It demonstrates model training, versioning, containerization, CI/CD automation, deployment, monitoring, and post-deployment evaluation using open-source tools.
 
-Use Case
-Input: 224x224 RGB image
-Output: Cat or Dog
-Dataset: Kaggle Cats vs Dogs Dataset
-Data Split: 80% Train / 10% Validation / 10% Test
-Data Augmentation applied for better generalization.
+The system includes:
 
-M1 – Model Development & Experiment Tracking
+->Model training
 
-CNN model built using TensorFlow/Keras
+->Experiment tracking (MLflow)
 
-Experiments tracked using MLflow (accuracy, loss, artifacts)
+->Data & model versioning (DVC)
 
-Dataset and trained model versioned using DVC
+->FastAPI inference service
 
-M2 – Containerized Inference Service
-Inference API built using FastAPI.
+->Docker containerization
 
-Available Endpoints:
-GET /health
-Returns service status.
+->CI/CD automation (GitHub Actions)
 
-POST /predict
-Accepts image file and returns prediction, probability, and latency.
+->Monitoring & post-deployment evaluation
 
-GET /metrics
-Returns total request count and average inference latency.
+**PREREQUISITES**
 
-The model is packaged inside a Docker container for reproducible deployment.
+Install the following tools:
 
-M3 – Continuous Integration (CI)
-Implemented using GitHub Actions.
-On every push to the main branch:
+Python 3.10
 
-Install dependencies
+Git
 
-Run unit tests (pytest)
+Docker Desktop
 
-Pull Docker image
-
-Deploy container
-
-Execute smoke test
-
-M4 – Continuous Deployment (CD)
-On updates to the main branch:
-
-Pull latest Docker image from Docker Hub
-
-Replace running container
-
-Validate deployment using health endpoint
-
-M5 – Monitoring & Post-Deployment Evaluation
-
-Basic Monitoring & Logging:
-
-Structured logging of prediction requests
-
-Request counter
-
-Latency tracking
-
-/metrics endpoint to expose runtime statistics
-
-Post-Deployment Model Evaluation:
-A labeled batch of images is sent to the deployed API using an evaluation script to compute post-deployment accuracy.
-This verifies deployment correctness and model performance consistency.
-
-Project Structure
-api/
-src/
-models/
-evaluation/
-tests/
-Dockerfile
-requirements.txt
-.github/workflows/ci.yml
-
-Technology Stack
-TensorFlow / Keras
-MLflow
 DVC
-FastAPI
-Docker
-GitHub Actions
-Docker Hub
 
-How to Run Locally
+MLflow 
 
-Start container:
-docker run -p 8000:8000 <docker-username>/cats-dogs-api:latest
+**Verify installation:**
 
-Health check:
+ python --version
+ 
+docker --version 
+
+git --version 
+
+dvc --version 
+
+mlflow --version
+
+**STEP 1 – CLONE REPOSITORY**
+
+git clone <repository-url>
+cd cats_dogs_mlops
+
+
+STEP 2 – CREATE VIRTUAL ENVIRONMENT
+
+Windows:
+
+python -m venv venv
+venv\Scripts\activate
+
+Mac/Linux:
+
+python3 -m venv venv
+source venv/bin/activate
+
+Install dependencies:
+
+pip install -r requirements.txt
+
+STEP 3 – DATASET SETUP
+
+Download the Kaggle Cats vs Dogs dataset.
+
+Place dataset inside:
+
+data/cats_and_dogs/
+
+If using DVC:
+
+dvc pull
+
+This restores the versioned dataset and model.
+
+STEP 4 – TRAIN THE MODEL (M1)
+
+Run:
+
+python src/train.py
+
+This will:
+
+Train CNN model
+
+Save model inside models/
+
+**Log experiments to MLflow**
+
+To view MLflow UI:
+
+From your project root directory run
+
+mlflow ui
+
+Open browser:
+
+http://localhost:5000
+
+STEP 5 – RUN INFERENCE API LOCALLY (M2)
+
+Start FastAPI service:
+
+uvicorn api.main:app --host 0.0.0.0 --port 8000
+
+**Test health endpoint:**
+
 http://localhost:8000/health
+**
+Test prediction:**
 
-Make prediction using curl:
 curl -X POST http://localhost:8000/predict
  -F "file=@dog.jpg"
 
-Outcome
-This project demonstrates a production-style ML lifecycle including reproducibility, automation, deployment, monitoring, and post-deployment validation.
+STEP 6 – BUILD DOCKER IMAGE
+
+docker build -t indrakshi/cats-dogs-api:latest .
+
+Push to Docker Hub:
+
+docker login
+docker push <docker-username>/cats-dogs-api:latest
+
+STEP 7 – RUN CONTAINER
+
+docker run -p 8000:8000 <docker-username>/cats-dogs-api:latest
+
+Verify:
+
+http://localhost:8000/health
+
+STEP 8 – CI/CD PIPELINE (M3 & M4)
+
+CI/CD is configured using GitHub Actions.
+
+On every push to main branch:
+
+Dependencies installed
+
+Unit tests executed
+
+Docker image pulled
+
+Container deployed
+
+Smoke test executed
+
+To trigger CI:
+
+git add .
+git commit -m "Trigger pipeline"
+git push
+
+Check GitHub → Actions tab.
+
+STEP 9 – MONITORING (M5)
+
+Make prediction requests.
+
+Then check metrics:
+
+http://localhost:8000/metrics
+
+Metrics include:
+
+Total requests
+
+Average latency
+
+Logs display prediction label, probability, and latency.
+
+STEP 10 – POST-DEPLOYMENT EVALUATION
+
+Create folder:
+
+sample_test/
+├── Cat/
+├── Dog/
+
+Place a few labeled images.
+
+Run:
+
+python evaluation/post_deployment_eval.py
+
+This computes post-deployment accuracy.
+
+PROJECT STRUCTURE
+
+api/ – FastAPI inference service
+src/ – Model training code
+models/ – Trained model (DVC tracked)
+evaluation/ – Post-deployment evaluation script
+tests/ – Unit tests
+Dockerfile – Container definition
+requirements.txt – Dependencies
+.github/workflows/ci.yml – CI/CD pipeline
+
+
+
