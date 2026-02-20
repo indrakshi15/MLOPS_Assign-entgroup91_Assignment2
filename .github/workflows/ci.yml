@@ -41,7 +41,7 @@ jobs:
       - name: Push Docker Image
         run: docker push ${{ secrets.DOCKER_USERNAME }}/cats-dogs-api:latest
 
-      # Deploy by running container directly
+      # Run container for deployment test
       - name: Run Container
         run: |
           docker run -d -p 8000:8000 --name test-api \
@@ -49,6 +49,10 @@ jobs:
 
       - name: Wait for app to start
         run: sleep 20
+
+      # Show logs to debug startup issues
+      - name: Show Container Logs
+        run: docker logs test-api
 
       - name: Smoke Test - Health Endpoint
         run: curl --fail http://localhost:8000/health
