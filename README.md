@@ -1,6 +1,15 @@
+
 PROJECT OVERVIEW
 
 This project implements a complete end-to-end MLOps pipeline for a binary image classification model (Cats vs Dogs).
+
+Contribution:
+Indrakshi Bhattacharjee(2024aa053811@wilp.bits-pilani.ac.in)(100%)
+AMRA ABDUL HAMEED(2024ab05161@wilp.bits-pilani.ac.in)100%
+Dinesh Singh(2024ab05155@wilp.bits-pilani.ac.in) 100%
+KATHULA DEEPAK(2024ab05158@wilp.bits-pilani.ac.in) 100%
+KONA UDAYA KUMAR REDDY(2024aa05802@wilp.bits-pilani.ac.in) 100%
+
 
 The system includes:
 
