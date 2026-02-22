@@ -199,6 +199,12 @@ src/ – Model training code
 models/ – Trained model (DVC tracked)
 evaluation/ – Post-deployment evaluation script
 tests/ – Unit tests
+
+Important Note:
+The trained model file is approximately 273 MB.
+GitHub has a 100 MB limit per file, so pushing it directly caused failures.
+Therefore, following real MLOps best practices, the model artifact is excluded from GitHub and shared separately via Google Drive.
+In production systems, this would typically be handled using MLflow Model Registry, S3, or Azure Blob Storage.
 Dockerfile – Container definition
 requirements.txt – Dependencies
 .github/workflows/ci.yml – CI/CD pipeline
